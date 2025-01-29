@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
-import GlobalStyle from './styles/GlobalStyle';
+import { GlobalStyle } from './styles/GlobalStyle';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import Welcome from './pages/Welcome';
@@ -32,7 +32,7 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 const projectId = process.env.REACT_APP_WALLETCONNECT_PROJECT_ID;
 const alchemyApiKey = process.env.REACT_APP_ALCHEMY_API_KEY;
 
-const { chains, publicClient } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, sepolia],
   [
     alchemyProvider({ apiKey: alchemyApiKey }),
@@ -55,6 +55,7 @@ const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
+  webSocketPublicClient,
 });
 
 function App() {
@@ -63,29 +64,25 @@ function App() {
       <RainbowKitProvider
         chains={chains}
         theme={darkTheme({
-          accentColor: '#e2c2ff',
-          accentColorForeground: 'black',
-          borderRadius: 'medium',
+          accentColor: theme.colors.primary,
+          accentColorForeground: 'white',
+          borderRadius: 'large',
+          fontStack: 'system',
         })}
-        coolMode
       >
         <ThemeProvider theme={theme}>
           <GlobalStyle />
           <Router>
-            <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-              <Navigation />
-              <main style={{ flex: 1 }}>
-                <Routes>
-                  <Route path="/" element={<Welcome />} />
-                  <Route path="/marketplace" element={<Marketplace />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/presale" element={<Presale />} />
-                  <Route path="/roadmap" element={<Roadmap />} />
-                </Routes>
-              </main>
-              <Footer />
-            </div>
+            <Navigation />
+            <Routes>
+              <Route path="/" element={<Welcome />} />
+              <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/presale" element={<Presale />} />
+              <Route path="/roadmap" element={<Roadmap />} />
+            </Routes>
+            <Footer />
           </Router>
         </ThemeProvider>
       </RainbowKitProvider>

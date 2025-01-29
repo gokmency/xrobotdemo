@@ -6,56 +6,105 @@ import { FaTwitter, FaLinkedin } from 'react-icons/fa';
 const AboutContainer = styled.div`
   min-height: 100vh;
   padding: 120px 5% 40px;
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.background};
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: ${({ theme }) => theme.gradients.glow};
+    pointer-events: none;
+    z-index: 1;
+  }
 `;
 
 const Content = styled.div`
+  position: relative;
+  z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
 `;
 
 const Title = styled(motion.h1)`
   font-size: 3rem;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  text-align: center;
   background: ${({ theme }) => theme.gradients.primary};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
 
-const Section = styled(motion.div)`
-  margin-bottom: 4rem;
+const VisionSection = styled(motion.div)`
+  padding: 40px;
+  margin-bottom: 60px;
+  background: ${({ theme }) => theme.colors.card.background};
+  border: 1px solid ${({ theme }) => theme.colors.card.border};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  backdrop-filter: blur(20px);
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    text-align: center;
+  }
+`;
+
+const VisionContent = styled.div`
+  width: 100%;
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 2rem;
-  color: ${({ theme }) => theme.colors.accent};
-  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: ${({ theme }) => theme.colors.text.primary};
+  text-align: center;
+  
+  span {
+    background: ${({ theme }) => theme.gradients.primary};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 `;
 
 const Text = styled.p`
   color: ${({ theme }) => theme.colors.text.secondary};
   line-height: 1.8;
-  margin-bottom: 1.5rem;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
 `;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin: 3rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin: 60px 0;
 `;
 
 const Card = styled(motion.div)`
-  background: ${({ theme }) => theme.colors.secondary};
-  padding: 2rem;
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  background: ${({ theme }) => theme.colors.card.background};
+  border: 1px solid ${({ theme }) => theme.colors.card.border};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  backdrop-filter: blur(20px);
+  transition: ${({ theme }) => theme.transitions.default};
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: ${({ theme }) => theme.shadows.glow};
+    border-color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.card.hover};
+  }
   
   h3 {
-    color: ${({ theme }) => theme.colors.accent};
-    margin-bottom: 1rem;
     font-size: 1.5rem;
+    margin-bottom: 1rem;
+    background: ${({ theme }) => theme.gradients.primary};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   
   p {
@@ -67,17 +116,28 @@ const Card = styled(motion.div)`
 const TeamGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin: 3rem 0;
+  gap: 30px;
+  margin-top: 40px;
 `;
 
 const TeamMember = styled(motion.div)`
   text-align: center;
+  padding: 30px;
+  background: ${({ theme }) => theme.colors.card.background};
+  border: 1px solid ${({ theme }) => theme.colors.card.border};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  backdrop-filter: blur(20px);
+  transition: ${({ theme }) => theme.transitions.default};
   
   &:hover {
+    transform: translateY(-5px);
+    box-shadow: ${({ theme }) => theme.shadows.glow};
+    border-color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.card.hover};
+    
     .member-image {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 30px rgba(0, 240, 255, 0.2);
+      border-color: ${({ theme }) => theme.colors.primary};
+      box-shadow: ${({ theme }) => theme.shadows.glow};
     }
     
     .social-links {
@@ -88,29 +148,13 @@ const TeamMember = styled(motion.div)`
 `;
 
 const MemberImage = styled.div`
-  width: 200px;
-  height: 200px;
-  margin: 0 auto 1.5rem;
-  border-radius: 20px;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  border: 2px solid ${({ theme }) => theme.colors.card.border};
   overflow: hidden;
-  transition: all 0.3s ease;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: ${({ theme }) => theme.gradients.primary};
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  &:hover::before {
-    opacity: 0.3;
-  }
+  transition: ${({ theme }) => theme.transitions.default};
   
   img {
     width: 100%;
@@ -120,32 +164,34 @@ const MemberImage = styled.div`
 `;
 
 const MemberName = styled.h3`
-  font-size: 1.5rem;
-  color: ${({ theme }) => theme.colors.text.primary};
+  font-size: 1.2rem;
   margin-bottom: 0.5rem;
+  color: ${({ theme }) => theme.colors.text.primary};
 `;
 
 const MemberRole = styled.p`
-  color: ${({ theme }) => theme.colors.accent};
+  color: ${({ theme }) => theme.colors.text.secondary};
   margin-bottom: 1rem;
+  font-size: 0.9rem;
 `;
 
 const SocialLinks = styled.div`
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  opacity: 0;
+  gap: 15px;
+  opacity: 0.7;
   transform: translateY(10px);
-  transition: all 0.3s ease;
+  transition: ${({ theme }) => theme.transitions.default};
 `;
 
 const SocialLink = styled.a`
   color: ${({ theme }) => theme.colors.text.secondary};
   font-size: 1.2rem;
-  transition: color 0.3s ease;
+  transition: ${({ theme }) => theme.transitions.default};
   
   &:hover {
-    color: ${({ theme }) => theme.colors.accent};
+    color: ${({ theme }) => theme.colors.primary};
+    transform: translateY(-2px);
   }
 `;
 
@@ -189,104 +235,76 @@ const About = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          About XRobot
+          Hakkımızda
         </Title>
 
-        <Section
+        <VisionSection
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <SectionTitle>Our Vision</SectionTitle>
-          <Text>
-            XRobot is revolutionizing the robotics industry by democratizing access to 
-            advanced service robots through blockchain technology. We believe in creating 
-            opportunities for everyone to participate in the growing robotics economy 
-            through fractional ownership and automated revenue distribution.
-          </Text>
-        </Section>
+          <VisionContent>
+            <SectionTitle>Vizyonumuz <span>ve Misyonumuz</span></SectionTitle>
+            <Text>
+              XRobot olarak, robotik teknolojisini herkes için erişilebilir kılmayı hedefliyoruz. 
+              Robotların kesirli sahipliği ile yatırımcılarımıza pasif gelir sağlarken, 
+              aynı zamanda teknolojik inovasyonu demokratikleştiriyoruz.
+            </Text>
+          </VisionContent>
+        </VisionSection>
 
         <Grid>
           <Card
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <h3>Innovation</h3>
-            <p>
-              Our platform combines cutting-edge robotics with blockchain technology,
-              creating a new paradigm in automated service delivery and asset ownership.
-            </p>
+            <h3>İnovasyon</h3>
+            <p>En son teknolojileri kullanarak robotik alanında öncü çözümler geliştiriyoruz.</p>
           </Card>
-
           <Card
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <h3>Transparency</h3>
-            <p>
-              All transactions and revenue distributions are recorded on the blockchain,
-              ensuring complete transparency and trust in our ecosystem.
-            </p>
+            <h3>Güvenilirlik</h3>
+            <p>Blockchain teknolojisi ile güvenli ve şeffaf bir yatırım platformu sunuyoruz.</p>
           </Card>
-
           <Card
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <h3>Community</h3>
-            <p>
-              We're building a global community of robot token holders who share in the
-              success of our automated service network.
-            </p>
+            <h3>Sürdürülebilirlik</h3>
+            <p>Uzun vadeli değer yaratmayı ve sürdürülebilir büyümeyi hedefliyoruz.</p>
           </Card>
         </Grid>
 
-        <Section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <SectionTitle>Meet Our Team</SectionTitle>
-          <TeamGrid>
-            {teamMembers.map((member, index) => (
-              <TeamMember
-                key={member.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <MemberImage className="member-image">
-                  <img src={member.image} alt={member.name} />
-                </MemberImage>
-                <MemberName>{member.name}</MemberName>
-                <MemberRole>{member.role}</MemberRole>
-                <SocialLinks className="social-links">
-                  <SocialLink href={member.twitter} target="_blank" rel="noopener noreferrer">
-                    <FaTwitter />
-                  </SocialLink>
-                  <SocialLink href={member.linkedin} target="_blank" rel="noopener noreferrer">
-                    <FaLinkedin />
-                  </SocialLink>
-                </SocialLinks>
-              </TeamMember>
-            ))}
-          </TeamGrid>
-        </Section>
-
-        <Section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <SectionTitle>Technology</SectionTitle>
-          <Text>
-            Our robots are equipped with advanced AI and automation capabilities,
-            enabling them to provide consistent, high-quality service across various
-            venues. Each robot is tokenized on the blockchain, with ownership divided
-            into 10 equal shares, allowing investors to participate in the robot
-            economy with lower capital requirements.
-          </Text>
-        </Section>
+        <SectionTitle>Ekibimiz</SectionTitle>
+        <TeamGrid>
+          {teamMembers.map((member, index) => (
+            <TeamMember
+              key={member.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+            >
+              <MemberImage className="member-image">
+                <img src={member.image} alt={member.name} />
+              </MemberImage>
+              <MemberName>{member.name}</MemberName>
+              <MemberRole>{member.role}</MemberRole>
+              <SocialLinks className="social-links">
+                <SocialLink href={member.twitter} target="_blank" rel="noopener noreferrer">
+                  <FaTwitter />
+                </SocialLink>
+                <SocialLink href={member.linkedin} target="_blank" rel="noopener noreferrer">
+                  <FaLinkedin />
+                </SocialLink>
+              </SocialLinks>
+            </TeamMember>
+          ))}
+        </TeamGrid>
       </Content>
     </AboutContainer>
   );

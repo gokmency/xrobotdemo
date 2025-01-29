@@ -7,24 +7,50 @@ import { useAccount } from 'wagmi';
 const DashboardContainer = styled.div`
   min-height: 100vh;
   padding: 120px 5% 40px;
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.background};
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: ${({ theme }) => theme.gradients.glow};
+    pointer-events: none;
+    z-index: 1;
+  }
+`;
+
+const Content = styled.div`
+  position: relative;
+  z-index: 2;
+  max-width: 1440px;
+  margin: 0 auto;
 `;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
   margin-bottom: 40px;
 `;
 
 const Card = styled(motion.div)`
-  background: ${({ theme }) => theme.colors.secondary};
-  border-radius: 20px;
-  padding: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  padding: 24px;
+  background: ${({ theme }) => theme.colors.card.background};
+  border: 1px solid ${({ theme }) => theme.colors.card.border};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  backdrop-filter: blur(20px);
+  transition: ${({ theme }) => theme.transitions.default};
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${({ theme }) => theme.shadows.glow};
+    border-color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.card.hover};
+  }
 `;
 
 const CardHeader = styled.div`
@@ -60,21 +86,25 @@ const Subtitle = styled.p`
 `;
 
 const TokensTable = styled.div`
-  background: ${({ theme }) => theme.colors.secondary};
-  border-radius: 20px;
-  padding: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: ${({ theme }) => theme.colors.card.background};
+  border: 1px solid ${({ theme }) => theme.colors.card.border};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
   overflow: hidden;
+  backdrop-filter: blur(20px);
 `;
 
 const TableHeader = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  padding: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.text.secondary};
-
+  padding: 20px;
+  background: ${({ theme }) => theme.colors.card.hover};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.card.border};
+  
+  span {
+    color: ${({ theme }) => theme.colors.text.secondary};
+    font-weight: 600;
+  }
+  
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     display: none;
   }
@@ -83,32 +113,29 @@ const TableHeader = styled.div`
 const TableRow = styled(motion.div)`
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-  padding: 20px 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 20px;
   align-items: center;
-  transition: background-color 0.3s ease;
-
+  border-bottom: 1px solid ${({ theme }) => theme.colors.card.border};
+  transition: ${({ theme }) => theme.transitions.default};
+  
   &:hover {
-    background: rgba(255, 255, 255, 0.02);
+    background: ${({ theme }) => theme.colors.card.hover};
   }
-
-  &:last-child {
-    border-bottom: none;
-  }
-
+  
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 10px;
-    padding: 20px;
     
-    > * {
+    div {
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       
       &::before {
         content: attr(data-label);
-        font-weight: 500;
+        font-weight: 600;
         color: ${({ theme }) => theme.colors.text.secondary};
       }
     }
@@ -118,18 +145,17 @@ const TableRow = styled(motion.div)`
 const TokenName = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: ${({ theme }) => theme.colors.text.primary};
-  font-weight: 500;
+  font-weight: 600;
 `;
 
 const TokenImage = styled.div`
   width: 40px;
   height: 40px;
-  border-radius: 10px;
-  background: ${({ theme }) => theme.gradients.primary};
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
   overflow: hidden;
-
+  
   img {
     width: 100%;
     height: 100%;
@@ -140,19 +166,16 @@ const TokenImage = styled.div`
 const ClaimButton = styled(motion.button)`
   padding: 8px 16px;
   background: ${({ theme }) => theme.gradients.primary};
-  border-radius: 8px;
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: 500;
+  color: ${({ theme }) => theme.colors.text.primary};
   border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  font-weight: 600;
   cursor: pointer;
+  transition: ${({ theme }) => theme.transitions.default};
   
   &:hover {
-    background: ${({ theme }) => theme.gradients.hover};
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    transform: translateY(-2px);
+    box-shadow: ${({ theme }) => theme.shadows.glow};
   }
 `;
 
@@ -229,94 +252,96 @@ const Dashboard = () => {
 
   return (
     <DashboardContainer>
-      <Grid>
-        <Card
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <CardHeader>
-            <Title>Portfolio Value</Title>
-            <FiDollarSign />
-          </CardHeader>
-          <Value>{mockData.totalValue}</Value>
-          <Subtitle>Total value of your robot tokens</Subtitle>
-        </Card>
-
-        <Card
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <CardHeader>
-            <Title>Monthly Revenue</Title>
-            <FiTrendingUp />
-          </CardHeader>
-          <Value>{mockData.monthlyRevenue}</Value>
-          <Subtitle>Revenue generated this month</Subtitle>
-        </Card>
-
-        <Card
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <CardHeader>
-            <Title>Tokens Owned</Title>
-            <FiPieChart />
-          </CardHeader>
-          <Value>{mockData.tokensOwned}</Value>
-          <Subtitle>Number of robot tokens you own</Subtitle>
-        </Card>
-
-        <Card
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <CardHeader>
-            <Title>Total Rewards</Title>
-            <FiActivity />
-          </CardHeader>
-          <Value>{mockData.totalRewards}</Value>
-          <Subtitle>Total rewards earned to date</Subtitle>
-        </Card>
-      </Grid>
-
-      <TokensTable>
-        <TableHeader>
-          <span>Robot Token</span>
-          <span>Ownership</span>
-          <span>Revenue</span>
-          <span>Total Rewards</span>
-          <span>Claimable</span>
-        </TableHeader>
-        {mockData.tokens.map((token, index) => (
-          <TableRow
-            key={token.id}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+      <Content>
+        <Grid>
+          <Card
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <TokenName data-label="Robot Token">
-              <TokenImage>
-                <img src={token.image} alt={token.name} />
-              </TokenImage>
-              {token.name}
-            </TokenName>
-            <div data-label="Ownership">{token.ownership}</div>
-            <div data-label="Revenue">{token.revenue}</div>
-            <div data-label="Total Rewards">{token.rewards}</div>
-            <ClaimButton
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              data-label="Claimable"
+            <CardHeader>
+              <Title>Portfolio Value</Title>
+              <FiDollarSign />
+            </CardHeader>
+            <Value>{mockData.totalValue}</Value>
+            <Subtitle>Total value of your robot tokens</Subtitle>
+          </Card>
+
+          <Card
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <CardHeader>
+              <Title>Monthly Revenue</Title>
+              <FiTrendingUp />
+            </CardHeader>
+            <Value>{mockData.monthlyRevenue}</Value>
+            <Subtitle>Revenue generated this month</Subtitle>
+          </Card>
+
+          <Card
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <CardHeader>
+              <Title>Tokens Owned</Title>
+              <FiPieChart />
+            </CardHeader>
+            <Value>{mockData.tokensOwned}</Value>
+            <Subtitle>Number of robot tokens you own</Subtitle>
+          </Card>
+
+          <Card
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <CardHeader>
+              <Title>Total Rewards</Title>
+              <FiActivity />
+            </CardHeader>
+            <Value>{mockData.totalRewards}</Value>
+            <Subtitle>Total rewards earned to date</Subtitle>
+          </Card>
+        </Grid>
+
+        <TokensTable>
+          <TableHeader>
+            <span>Robot Token</span>
+            <span>Ownership</span>
+            <span>Revenue</span>
+            <span>Total Rewards</span>
+            <span>Claimable</span>
+          </TableHeader>
+          {mockData.tokens.map((token, index) => (
+            <TableRow
+              key={token.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              Claim {token.claimable}
-            </ClaimButton>
-          </TableRow>
-        ))}
-      </TokensTable>
+              <TokenName data-label="Robot Token">
+                <TokenImage>
+                  <img src={token.image} alt={token.name} />
+                </TokenImage>
+                {token.name}
+              </TokenName>
+              <div data-label="Ownership">{token.ownership}</div>
+              <div data-label="Revenue">{token.revenue}</div>
+              <div data-label="Total Rewards">{token.rewards}</div>
+              <ClaimButton
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                data-label="Claimable"
+              >
+                Claim {token.claimable}
+              </ClaimButton>
+            </TableRow>
+          ))}
+        </TokensTable>
+      </Content>
     </DashboardContainer>
   );
 };

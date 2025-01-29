@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
-const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
   * {
@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: ${({ theme }) => theme.fonts.primary};
-    background: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.background};
     color: ${({ theme }) => theme.colors.text.primary};
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -21,30 +21,52 @@ const GlobalStyle = createGlobalStyle`
   }
 
   a {
-    color: inherit;
     text-decoration: none;
-    transition: ${({ theme }) => theme.animations.transition};
+    color: inherit;
   }
 
   button {
-    background: none;
-    border: none;
+    font-family: ${({ theme }) => theme.fonts.primary};
     cursor: pointer;
-    font-family: inherit;
-    transition: ${({ theme }) => theme.animations.transition};
   }
 
+  /* Loader styles */
+  .loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid ${({ theme }) => theme.colors.card.border};
+    border-bottom-color: ${({ theme }) => theme.colors.primary};
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Scrollbar styles */
   ::-webkit-scrollbar {
     width: 8px;
   }
 
   ::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.secondary};
+    background: ${({ theme }) => theme.colors.card.background};
   }
 
   ::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.accent};
+    background: ${({ theme }) => theme.colors.card.border};
     border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.colors.primary};
   }
 
   ::selection {
@@ -52,5 +74,3 @@ const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.colors.primary};
   }
 `;
-
-export default GlobalStyle;

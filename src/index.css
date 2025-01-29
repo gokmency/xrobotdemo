@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #0052FF;
+  --secondary: #1A1B1F;
+  --background: #000000;
+  --accent: #4C82FB;
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0A0A0;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid var(--text-secondary);
+  border-bottom-color: var(--primary);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 

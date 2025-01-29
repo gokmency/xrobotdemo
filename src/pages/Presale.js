@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import RobotModel from '../components/3d/RobotModel';
 import { FiClock, FiUsers, FiTrendingUp, FiTarget } from 'react-icons/fi';
+import { SplineScene } from '../components/ui/splite';
 
 const PresaleContainer = styled.div`
   min-height: 100vh;
   padding: 120px 5% 40px;
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.background};
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: ${({ theme }) => theme.gradients.glow};
+    pointer-events: none;
+    z-index: 1;
+  }
 `;
 
 const Grid = styled.div`
@@ -18,6 +29,8 @@ const Grid = styled.div`
   gap: 40px;
   max-width: 1440px;
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
@@ -25,38 +38,40 @@ const Grid = styled.div`
 `;
 
 const ModelContainer = styled.div`
-  height: 500px;
-  background: ${({ theme }) => theme.colors.secondary};
-  border-radius: 20px;
+  height: 700px;
+  background: transparent;
+  border-radius: ${({ theme }) => theme.borderRadius.large};
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: ${({ theme }) => theme.gradients.glass};
-    pointer-events: none;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    height: 500px;
   }
 `;
 
 const InfoContainer = styled.div`
   padding: 40px;
-  background: ${({ theme }) => theme.colors.secondary};
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: ${({ theme }) => theme.colors.card.background};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  border: 1px solid ${({ theme }) => theme.colors.card.border};
+  box-shadow: ${({ theme }) => theme.shadows.card};
+  backdrop-filter: blur(20px);
 `;
 
 const Title = styled(motion.h1)`
   font-size: 2.5rem;
   margin-bottom: 20px;
-  background: ${({ theme }) => theme.gradients.primary};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: ${({ theme }) => theme.colors.text.primary};
+  font-weight: 700;
+  
+  span {
+    background: ${({ theme }) => theme.gradients.primary};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 `;
 
 const Description = styled.p`
@@ -72,25 +87,25 @@ const Timer = styled.div`
   gap: 15px;
   margin: 30px 0;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 15px;
+  background: ${({ theme }) => theme.colors.card.background};
+  border: 1px solid ${({ theme }) => theme.colors.card.border};
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  backdrop-filter: blur(20px);
 `;
 
 const TimeUnit = styled.div`
   text-align: center;
-  padding: 15px;
-  background: ${({ theme }) => theme.colors.primary};
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-
+  
   span {
     display: block;
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: ${({ theme }) => theme.colors.accent};
+    font-size: 2rem;
+    font-weight: 700;
+    background: ${({ theme }) => theme.gradients.primary};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 5px;
   }
-
+  
   p {
     color: ${({ theme }) => theme.colors.text.secondary};
     font-size: 0.9rem;
@@ -101,30 +116,40 @@ const Stats = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  margin: 30px 0;
+  margin-top: 30px;
 `;
 
 const Stat = styled.div`
-  text-align: center;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-
-  svg {
-    color: ${({ theme }) => theme.colors.accent};
-    font-size: 1.5rem;
+  background: ${({ theme }) => theme.colors.card.background};
+  border: 1px solid ${({ theme }) => theme.colors.card.border};
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  text-align: center;
+  transition: ${({ theme }) => theme.transitions.default};
+  backdrop-filter: blur(20px);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${({ theme }) => theme.shadows.glow};
+    border-color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.card.hover};
   }
-
-  h3 {
+  
+  svg {
+    color: ${({ theme }) => theme.colors.primary};
     font-size: 1.5rem;
-    color: ${({ theme }) => theme.colors.accent};
+    margin-bottom: 10px;
+  }
+  
+  h3 {
+    background: ${({ theme }) => theme.gradients.primary};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.5rem;
+    font-weight: 700;
     margin-bottom: 5px;
   }
-
+  
   p {
     color: ${({ theme }) => theme.colors.text.secondary};
     font-size: 0.9rem;
@@ -158,26 +183,26 @@ const ProgressLabel = styled.div`
 
 const PurchaseButton = styled(motion.button)`
   width: 100%;
-  padding: 15px;
+  padding: 1.2rem;
   background: ${({ theme }) => theme.gradients.primary};
-  border-radius: 10px;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.text.primary};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.full};
   font-size: 1.1rem;
   font-weight: 600;
-  margin-top: 20px;
-  border: none;
   cursor: pointer;
+  transition: ${({ theme }) => theme.transitions.default};
+  margin-top: 2rem;
+  
+  span {
+    color: ${({ theme }) => theme.colors.text.primary};
+    font-weight: 700;
+  }
   
   &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${({ theme }) => theme.shadows.glow};
     background: ${({ theme }) => theme.gradients.hover};
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    &:hover {
-      background: ${({ theme }) => theme.gradients.primary};
-    }
   }
 `;
 
@@ -221,21 +246,18 @@ const Presale = () => {
     <PresaleContainer>
       <Grid>
         <ModelContainer>
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-            <ambientLight intensity={0.5} />
-            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-            <RobotModel />
-            <OrbitControls enableZoom={false} />
-          </Canvas>
+          <SplineScene
+            scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+            className="w-full h-full absolute inset-0 scale-110 transform -translate-y-10 z-10"
+          />
         </ModelContainer>
-
         <InfoContainer>
           <Title
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            XRobot Presale
+            XRobot <span>Presale</span>
           </Title>
           <Description>
             Be among the first to own a share in our latest generation of service robots.
